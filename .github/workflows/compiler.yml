@@ -50,9 +50,25 @@ jobs:
        - name: Compiling Kernel
          run: |
             cd work
-            git clone $TOOLCHAIN --depth=1
-            CROSS_COMPILE+="aarch64-linux-android-4.9/bin/aarch64-linux-android-"
+            KERNEL_DIR=$PWD
+            TC_DIR=$KERNEL_DIR/
+            git clone --depth=50 https://github.com/arter97/arm64-gcc.git gcc64
+            cd gcc64
+            git reset --hard 811a3bc6b40ad924cd1a24a481b6ac5d9227ff7e
+            cd "$KERNEL_DIR"
+            git clone --depth=1 https://github.com/arter97/arm32-gcc.git gcc32
+	    GCC64_DIR=$KERNEL_DIR/gcc64
+	    GCC32_DIR=$KERNEL_DIR/gcc32
+            git clone https://android.googlesource.com/platform/system/libufdt "$KERNEL_DIR"/scripts/ufdt/libufdt
+            export KBUILD_COMPILER_STRING=$("$GCC64_DIR"/bin/aarch64-elf-gcc --version | head -n 1)
+	    export PATH=$TC_DIR/bin/:$GCC64_DIR/bin/:$GCC32_DIR/bin/:/usr/bin:$PATH
+            CROSS_COMPILE=aarch64-elf-
+            CROSS_COMPILE_ARM32=arm-eabi-
             export CROSS_COMPILE
+            export CROSS_COMPILE_ARM32
+            export AR=aarch64-elf-ar
+            export OBJDUMP=aarch64-elf-objdump
+            export STRIP=aarch64-elf-strip
             export ARCH=$ARCH
             export SUBARCH=$SUBARCH
             make clean
