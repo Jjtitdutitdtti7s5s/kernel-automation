@@ -16,9 +16,9 @@ on:
     
 
 env:
-  KERNEL_SOURCE: https://github.com/shivamjadon/Drona_Kernel_Rosy.git
-  BRANCH: q-caf
-  DEFCONFIG: drona-rosy_defconfig
+  KERNEL_SOURCE: https://github.com/PixelExperience-Devices/kernel_xiaomi_violet.git
+  BRANCH: ten
+  DEFCONFIG: vendor/violet-perf_defconfig
   TZ: Asia/Kolkata
   MIR: bit
   TOOLCHAIN: https://github.com/mscalindt/aarch64-linux-android-4.9.git
@@ -58,6 +58,7 @@ jobs:
             make clean
             make $DEFCONFIG
             make -j8
+            
        - name: Uploading process
          run: |
             cd work/arch/arm64/boot
